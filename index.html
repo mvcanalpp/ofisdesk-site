@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OfisDesk | Hukuk Büroları İçin Çalışma Merkezi</title>
+  <meta name="description" content="OfisDesk; dosya föyü, muhasebe, personel, UYAP talepleri ve PDF araçlarını tek merkezde toplar. Web'de çalış ekranı ile tarayıcıdan da yönetim sağlar.">
+  <style>
+    :root {
+      --navy: #071a31;
+      --navy-2: #0e2848;
+      --navy-3: #17375e;
+      --ink: #102033;
+      --muted: #64748b;
+      --line: #d9e2ef;
+      --paper: #ffffff;
+      --bg: #f5f7fb;
+      --gold: #e7b74a;
+      --soft: #eef3fb;
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    button, input, select { font: inherit; }
+    .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+    nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      padding: 18px 0;
+    }
+    nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 14px; color: white; font-weight: 900; font-size: 24px; text-decoration: none; }
+    .brand-mark {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.1);
+      display: grid;
+      place-items: center;
+      position: relative;
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 19px;
+      overflow: hidden;
+    }
+    .brand-mark span { position: relative; z-index: 1; }
+    .brand-mark img { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 20px; font-size: 14px; color: #dce7f7; }
+    .nav-links a { color: inherit; text-decoration: none; }
+    .nav-pill {
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,.08);
+    }
+    .hero {
+      min-height: 90vh;
+      display: grid;
+      align-items: center;
+      background:
+        linear-gradient(90deg, rgba(7,26,49,.98), rgba(7,26,49,.88) 45%, rgba(7,26,49,.42)),
+        radial-gradient(circle at 74% 24%, rgba(231,183,74,.22), transparent 31%),
+        linear-gradient(135deg, #edf2f8, #ffffff);
+      color: white;
+      overflow: hidden;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(340px, .9fr) minmax(360px, 560px);
+      gap: 56px;
+      align-items: center;
+      padding: 118px 0 56px;
+    }
+    h1 { margin: 0; font-size: clamp(44px, 6vw, 76px); line-height: .98; letter-spacing: 0; }
+    .lead { margin: 22px 0 0; color: #dce7f7; font-size: 20px; line-height: 1.55; max-width: 680px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 800;
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+    .btn.primary { background: white; color: var(--navy); }
+    .btn.gold { background: var(--gold); color: #08192d; }
+    .btn.secondary { background: rgba(255,255,255,.08); color: white; border-color: rgba(255,255,255,.24); }
+    .meta { margin-top: 14px; color: #b8c8dd; font-size: 13px; }
+    .hero-showcase {
+      min-width: 0;
+    }
+    .slide-frame {
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid rgba(231,183,74,.44);
+      background: rgba(255,255,255,.08);
+      box-shadow: 0 34px 90px rgba(0,0,0,.38);
+    }
+    .slide-track { display: flex; transition: transform .45s ease; }
+    .slide {
+      min-width: 100%;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+    }
+    .slide img {
+      width: 100%;
+      max-height: min(70vh, 720px);
+      object-fit: contain;
+      display: block;
+      border-radius: 8px;
+      background: #071a31;
+    }
+    .hero-slide-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 16px;
+      color: #dce7f7;
+    }
+    .hero-slide-caption h2 { margin: 0 0 4px; font-size: 22px; color: white; }
+    .hero-slide-caption p { margin: 0; line-height: 1.45; color: #cbd8ea; }
+    .slider-controls { display: flex; align-items: center; gap: 10px; }
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.08);
+      color: white;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .dots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 0;
+      background: rgba(255,255,255,.32);
+      cursor: pointer;
+      padding: 0;
+    }
+    .dot.active { width: 28px; background: var(--gold); }
+    .band { background: white; padding: 58px 0; }
+    .section-title { font-size: 34px; margin: 0 0 12px; color: var(--navy); }
+    .section-copy { color: var(--muted); font-size: 17px; line-height: 1.55; max-width: 780px; margin: 0 0 28px; }
+    .features { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+    .feature { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 18px; min-height: 170px; }
+    .feature h3 { margin: 0 0 10px; color: var(--navy); font-size: 18px; }
+    .feature p { margin: 0; color: var(--muted); line-height: 1.48; font-size: 14px; }
+    .web-work {
+      background: #eef3fb;
+      padding: 64px 0;
+    }
+    .work-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .login-card, .web-app {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 50px rgba(16,32,51,.08);
+    }
+    .login-card { padding: 22px; }
+    .login-card h3, .panel h3 { margin: 0 0 8px; color: var(--navy); }
+    .login-card p { margin: 0 0 18px; color: var(--muted); line-height: 1.45; }
+    .field { display: grid; gap: 7px; margin-bottom: 12px; }
+    .field label { color: var(--muted); font-size: 13px; font-weight: 700; }
+    .field input, .field select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: #fbfdff;
+      color: var(--ink);
+    }
+    .login-error { display: none; color: var(--danger); font-size: 13px; margin-top: 10px; }
+    .web-app { display: none; overflow: hidden; }
+    .web-app.active { display: grid; grid-template-columns: 190px 1fr; }
+    .web-side {
+      background: var(--navy);
+      padding: 16px;
+      color: white;
+      min-height: 570px;
+    }
+    .web-user { font-weight: 800; margin-bottom: 16px; }
+    .web-tab {
+      width: 100%;
+      text-align: left;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #dce7f7;
+      padding: 11px 12px;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    .web-tab.active { background: #2d4a7a; color: white; font-weight: 800; }
+    .web-content { padding: 18px; min-width: 0; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+    .stat { background: var(--soft); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+    .stat span { display: block; color: var(--muted); font-size: 13px; }
+    .stat b { display: block; margin-top: 6px; color: var(--navy); font-size: 22px; }
+    .form-row { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 10px; margin: 14px 0; align-items: end; }
+    .form-row.three { grid-template-columns: repeat(3, 1fr) auto; }
+    .small-btn {
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--navy-3);
+      color: white;
+      font-weight: 800;
+      padding: 0 14px;
+      cursor: pointer;
+    }
+    .web-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; background: white; font-size: 13px; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+    th { background: #e8eef8; color: var(--navy); }
+    .status { border-radius: 999px; padding: 4px 9px; font-weight: 800; font-size: 12px; display: inline-block; }
+    .status.green { background: #dcfce7; color: #166534; }
+    .status.gold { background: #fef3c7; color: #92400e; }
+    .download { background: var(--navy); color: white; padding: 44px 0; }
+    .download .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+    .download h2 { margin: 0 0 8px; font-size: 30px; }
+    .download p { margin: 0; color: #dce7f7; }
+    footer { padding: 24px 0; color: var(--muted); font-size: 13px; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 20px; }
+    @media (max-width: 1000px) {
+      .hero-grid, .work-grid { grid-template-columns: 1fr; }
+      .hero-grid { padding-top: 110px; }
+      .features, .stats { grid-template-columns: 1fr 1fr; }
+      .form-row, .form-row.three { grid-template-columns: 1fr 1fr; }
+      .download .wrap, footer .wrap { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 660px) {
+      .wrap { width: min(100% - 28px, 1180px); }
+      .brand { font-size: 20px; }
+      .brand-mark { width: 52px; height: 52px; }
+      .nav-links { display: none; }
+      .hero { min-height: auto; }
+      .hero-grid { padding-top: 104px; gap: 34px; }
+      .hero-slide-caption { align-items: flex-start; flex-direction: column; }
+      .features, .stats, .form-row, .form-row.three { grid-template-columns: 1fr; }
+      .web-app.active { grid-template-columns: 1fr; }
+      .web-side { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label="OfisDesk ana sayfa">
+        <span class="brand-mark"><img src="assets/app_icon.png" alt="" onerror="this.remove()"><span>OD</span></span>
+        <span>OfisDesk</span>
+      </a>
+      <div class="nav-links">
+        <a href="#ekranlar">Ekran Görselleri</a>
+        <a href="#ozellikler">Modüller</a>
+        <a class="nav-pill" href="#webde-calis">Web'de Çalış</a>
+        <a href="#indir">İndir</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top">
+    <section class="hero" id="ekranlar">
+      <div class="wrap hero-grid">
+        <div>
+          <h1>OfisDesk ile büronuz tek merkezde.</h1>
+          <p class="lead">Dosya föyü, muhasebe, UYAP talepleri, PDF araçları ve personel işlemlerini masaüstünde ve web ekranında düzenli takip edin.</p>
+          <div class="actions">
+            <a class="btn primary" href="https://github.com/mvcanalpp/ofisdesk-site/releases/download/v1.2.3/OfisDesk.exe">OfisDesk'i İndir</a>
+            <a class="btn gold" href="#webde-calis">Web'de Çalış</a>
+            <a class="btn secondary" href="#ozellikler">Modülleri Gör</a>
+          </div>
+          <div class="meta">Güncel sürüm: v1.2.3 | Windows masaüstü uygulaması | Web çalışma ekranı</div>
+        </div>
+        <div class="hero-showcase">
+          <div class="slide-frame">
+            <div class="slide-track" id="slideTrack">
+              <div class="slide"><img src="assets/slides/01-genel.jpg" alt="OfisDesk genel tanıtım"></div>
+              <div class="slide"><img src="assets/slides/02-dosya-foyu.jpg" alt="Dosya Föyü tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/03-personel-kontrol.jpg" alt="Personel ve kontrol tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/04-muhasebe.jpg" alt="Muhasebe tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/05-uyap-pdf.jpg" alt="UYAP ve PDF araçları tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/06-ek-ozellikler.jpg" alt="Ek özellikler tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/07-fiyatlandirma.jpg" alt="Fiyatlandırma tanıtımı"></div>
+            </div>
+          </div>
+          <div class="hero-slide-caption">
+            <div>
+              <h2 id="slideTitle">Genel Bakış</h2>
+              <p id="slideText">OfisDesk'i hukuk büroları için tek çalışma merkezi olarak konumlandırır.</p>
+              <div class="dots" id="slideDots" aria-label="Slayt seçimi"></div>
+            </div>
+            <div class="slider-controls">
+              <button class="icon-btn" id="prevSlide" type="button" aria-label="Önceki slayt">‹</button>
+              <button class="icon-btn" id="nextSlide" type="button" aria-label="Sonraki slayt">›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="ozellikler">
+      <div class="wrap">
+        <h2 class="section-title">OfisDesk modülleri</h2>
+        <p class="section-copy">Büronun dosya, finans, evrak ve ekip akışını aynı düzen içinde toplar. Masaüstü uygulaması ana çalışma alanı, web ekranı ise hızlı takip ve kayıt için hazırlanmıştır.</p>
+        <div class="features">
+          <div class="feature"><h3>Dosya Föyü</h3><p>Kurum kurum föy oluşturun, son değiştiren kullanıcıyı ve tarih bilgisini görün, yedekten geri dönebilin.</p></div>
+          <div class="feature"><h3>Muhasebe</h3><p>Kurum bakiyesi, UYAP masrafı, gelen ve istenen ücretleri takip edin; Excel raporu alın.</p></div>
+          <div class="feature"><h3>Personel İşleri</h3><p>Personel kayıtları, görevler, izinler ve kullanıcı yetkilerini düzenli takip edin.</p></div>
+          <div class="feature"><h3>UYAP Talepleri</h3><p>Talep metinlerini, UDF/PDF çıktılarını ve toplu belge hazırlıklarını hızlandırın.</p></div>
+          <div class="feature"><h3>PDF Araçları</h3><p>Birleştirme, bölme, metne çevirme ve toplu belge işlemlerini tek ekrandan yapın.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="web-work" id="webde-calis">
+      <div class="wrap">
+        <h2 class="section-title">Web'de Çalış</h2>
+        <p class="section-copy">Tarayıcıdan giriş yapıp muhasebe ve personel işlemlerini hızlıca takip edin. Bu ekran GitHub Pages üzerinde çalışır ve kayıtları tarayıcınızda saklar.</p>
+        <div class="work-grid">
+          <form class="login-card" id="loginForm">
+            <h3>Kullanıcı Girişi</h3>
+            <p>Web çalışma ekranına geçmek için kullanıcı bilgilerinizi girin.</p>
+            <div class="field">
+              <label for="loginUser">Kullanıcı adı veya e-posta</label>
+              <input id="loginUser" autocomplete="username" placeholder="ornek@ofisdesk.net">
+            </div>
+            <div class="field">
+              <label for="loginPass">Şifre</label>
+              <input id="loginPass" type="password" autocomplete="current-password" placeholder="Şifreniz">
+            </div>
+            <button class="btn gold" type="submit">Giriş Yap</button>
+            <div class="login-error" id="loginError">Kullanıcı adı ve şifre giriniz.</div>
+          </form>
+
+          <div class="web-app" id="webApp" aria-live="polite">
+            <aside class="web-side">
+              <div class="web-user" id="webUser">OfisDesk</div>
+              <button class="web-tab active" data-panel="panel-overview" type="button">Genel Bakış</button>
+              <button class="web-tab" data-panel="panel-accounting" type="button">Muhasebe</button>
+              <button class="web-tab" data-panel="panel-personnel" type="button">Personel İşleri</button>
+              <button class="web-tab" data-panel="panel-files" type="button">Dosya Föyü</button>
+              <button class="web-tab" id="logoutBtn" type="button">Çıkış</button>
+            </aside>
+            <div class="web-content">
+              <section class="panel active" id="panel-overview">
+                <h3>Genel Bakış</h3>
+                <div class="stats">
+                  <div class="stat"><span>Toplam Gelir</span><b id="statIncome">0 TL</b></div>
+                  <div class="stat"><span>Toplam Gider</span><b id="statExpense">0 TL</b></div>
+                  <div class="stat"><span>Net Bakiye</span><b id="statBalance">0 TL</b></div>
+                  <div class="stat"><span>Personel</span><b id="statPersonnel">0</b></div>
+                </div>
+                <p class="section-copy">Sol menüden muhasebe veya personel işlemlerine geçerek yeni kayıt ekleyebilirsiniz.</p>
+              </section>
+
+              <section class="panel" id="panel-accounting">
+                <h3>Muhasebe</h3>
+                <div class="form-row">
+                  <div class="field"><label>Kurum</label><input id="accInstitution" placeholder="Garanti Bankası"></div>
+                  <div class="field"><label>İşlem</label><select id="accType"><option>Gelir</option><option>Gider</option></select></div>
+                  <div class="field"><label>Tutar</label><input id="accAmount" type="number" min="0" placeholder="12500"></div>
+                  <div class="field"><label>Açıklama</label><input id="accNote" placeholder="Tahsilat / masraf"></div>
+                  <button class="small-btn" id="addAccounting" type="button">Ekle</button>
+                </div>
+                <div class="web-table-wrap">
+                  <table>
+                    <thead><tr><th>Kurum</th><th>İşlem</th><th>Tutar</th><th>Açıklama</th><th>Tarih</th></tr></thead>
+                    <tbody id="accountingRows"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="panel" id="panel-personnel">
+                <h3>Personel İşleri</h3>
+                <div class="form-row three">
+                  <div class="field"><label>Ad Soyad</label><input id="personName" placeholder="Av. Ayşe Demir"></div>
+                  <div class="field"><label>Görev</label><input id="personRole" placeholder="Avukat"></div>
+                  <div class="field"><label>Durum</label><select id="personStatus"><option>Aktif</option><option>İzinli</option><option>Pasif</option></select></div>
+                  <button class="small-btn" id="addPerson" type="button">Ekle</button>
+                </div>
+                <div class="web-table-wrap">
+                  <table>
+                    <thead><tr><th>Ad Soyad</th><th>Görev</th><th>Durum</th><th>Kayıt Tarihi</th></tr></thead>
+                    <tbody id="personRows"></tbody>
+                  </table>
+                </div>
+              </section>
+
+              <section class="panel" id="panel-files">
+                <h3>Dosya Föyü</h3>
+                <div class="web-table-wrap">
+                  <table>
+                    <thead><tr><th>Föy</th><th>Kurum</th><th>Durum</th><th>Son Değiştiren</th><th>Tarih</th></tr></thead>
+                    <tbody>
+                      <tr><td>ICA Föyü</td><td>ICA</td><td><span class="status green">Devam Ediyor</span></td><td>Web Kullanıcı</td><td>20.05.2026</td></tr>
+                      <tr><td>Otoyol Föyü</td><td>Otoyol</td><td><span class="status gold">Kontrolde</span></td><td>Web Kullanıcı</td><td>20.05.2026</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="download" id="indir">
+      <div class="wrap">
+        <div>
+          <h2>OfisDesk'i indirin</h2>
+          <p>En güncel Windows sürümü hazır. Kurulumdan sonra kullanıcı hesabınızla giriş yapabilirsiniz.</p>
+        </div>
+        <a class="btn primary" href="https://github.com/mvcanalpp/ofisdesk-site/releases/download/v1.2.3/OfisDesk.exe">Windows için İndir</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 OfisDesk</span>
+      <span>Hukuk büroları için masaüstü ve web çalışma merkezi</span>
+    </div>
+  </footer>
+
+  <script>
+    const slides = [
+      { title: "Genel Bakış", text: "OfisDesk'i hukuk büroları için tek çalışma merkezi olarak konumlandırır." },
+      { title: "Dosya Föyü", text: "Kurum bazlı föy, yedekleme, son değiştiren ve başlık filtreleri." },
+      { title: "Personel & Kontrol", text: "Ekip, yetki, işlem geçmişi ve güvenli kayıt yönetimi." },
+      { title: "Muhasebe", text: "Kurum bakiyeleri, gelir-gider ve Excel raporları." },
+      { title: "UYAP & PDF Araçları", text: "Talepler, PDF işlemleri, UDF ve toplu belge akışları." },
+      { title: "Ek Özellikler", text: "YTS tahsilat, barkod sorgulama, bulut veri saklama ve toplu talepler." },
+      { title: "Fiyatlandırma", text: "Demo, kullanıcı bazlı ve sınırsız kullanıcı planları." }
+    ];
+    const track = document.getElementById("slideTrack");
+    const title = document.getElementById("slideTitle");
+    const text = document.getElementById("slideText");
+    const dots = document.getElementById("slideDots");
+    let current = 0;
+    let timer;
+
+    slides.forEach((_, index) => {
+      const dot = document.createElement("button");
+      dot.className = "dot";
+      dot.type = "button";
+      dot.setAttribute("aria-label", `${index + 1}. slayta git`);
+      dot.addEventListener("click", () => showSlide(index, true));
+      dots.appendChild(dot);
+    });
+
+    function showSlide(index, manual = false) {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      title.textContent = slides[current].title;
+      text.textContent = slides[current].text;
+      [...dots.children].forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === current));
+      if (manual) restartTimer();
+    }
+
+    function restartTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => showSlide(current + 1), 5000);
+    }
+
+    document.getElementById("prevSlide").addEventListener("click", () => showSlide(current - 1, true));
+    document.getElementById("nextSlide").addEventListener("click", () => showSlide(current + 1, true));
+    showSlide(0);
+    restartTimer();
+
+    const loginForm = document.getElementById("loginForm");
+    const loginUser = document.getElementById("loginUser");
+    const loginPass = document.getElementById("loginPass");
+    const loginError = document.getElementById("loginError");
+    const webApp = document.getElementById("webApp");
+    const webUser = document.getElementById("webUser");
+    const money = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 });
+    const storeKey = "ofisdesk_web_demo";
+    const seed = {
+      accounting: [
+        { institution: "VakıfBank", type: "Gelir", amount: 245350, note: "Tahsilat", date: "20.05.2026" },
+        { institution: "UYAP", type: "Gider", amount: 82190, note: "Masraf", date: "20.05.2026" }
+      ],
+      personnel: [
+        { name: "Av. Mehmet Yılmaz", role: "Kurucu Avukat", status: "Aktif", date: "20.05.2026" },
+        { name: "Ayşe Demir", role: "Avukat", status: "Aktif", date: "20.05.2026" }
+      ]
+    };
+
+    function loadData() {
+      try {
+        return JSON.parse(localStorage.getItem(storeKey)) || seed;
+      } catch {
+        return seed;
+      }
+    }
+
+    function saveData(data) {
+      localStorage.setItem(storeKey, JSON.stringify(data));
+    }
+
+    function esc(value) {
+      return String(value || "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function today() {
+      return new Date().toLocaleDateString("tr-TR");
+    }
+
+    let data = loadData();
+
+    function renderWebApp() {
+      const accountingRows = document.getElementById("accountingRows");
+      const personRows = document.getElementById("personRows");
+      accountingRows.innerHTML = data.accounting.map(row => `
+        <tr>
+          <td>${esc(row.institution)}</td>
+          <td><span class="status ${row.type === "Gelir" ? "green" : "gold"}">${row.type}</span></td>
+          <td>${money.format(Number(row.amount || 0))}</td>
+          <td>${esc(row.note || "-")}</td>
+          <td>${esc(row.date)}</td>
+        </tr>`).join("");
+      personRows.innerHTML = data.personnel.map(row => `
+        <tr>
+          <td>${esc(row.name)}</td>
+          <td>${esc(row.role)}</td>
+          <td><span class="status ${row.status === "Aktif" ? "green" : "gold"}">${row.status}</span></td>
+          <td>${esc(row.date)}</td>
+        </tr>`).join("");
+      const income = data.accounting.filter(x => x.type === "Gelir").reduce((sum, x) => sum + Number(x.amount || 0), 0);
+      const expense = data.accounting.filter(x => x.type === "Gider").reduce((sum, x) => sum + Number(x.amount || 0), 0);
+      document.getElementById("statIncome").textContent = money.format(income);
+      document.getElementById("statExpense").textContent = money.format(expense);
+      document.getElementById("statBalance").textContent = money.format(income - expense);
+      document.getElementById("statPersonnel").textContent = data.personnel.length;
+    }
+
+    loginForm.addEventListener("submit", event => {
+      event.preventDefault();
+      if (!loginUser.value.trim() || !loginPass.value.trim()) {
+        loginError.style.display = "block";
+        return;
+      }
+      loginError.style.display = "none";
+      loginForm.style.display = "none";
+      webApp.classList.add("active");
+      webUser.textContent = loginUser.value.trim();
+      renderWebApp();
+    });
+
+    document.querySelectorAll(".web-tab[data-panel]").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".web-tab[data-panel]").forEach(item => item.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.panel).classList.add("active");
+      });
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      webApp.classList.remove("active");
+      loginForm.style.display = "block";
+      loginPass.value = "";
+    });
+
+    document.getElementById("addAccounting").addEventListener("click", () => {
+      const institution = document.getElementById("accInstitution").value.trim();
+      const amount = Number(document.getElementById("accAmount").value || 0);
+      if (!institution || amount <= 0) return;
+      data.accounting.unshift({
+        institution,
+        type: document.getElementById("accType").value,
+        amount,
+        note: document.getElementById("accNote").value.trim(),
+        date: today()
+      });
+      saveData(data);
+      renderWebApp();
+      document.getElementById("accInstitution").value = "";
+      document.getElementById("accAmount").value = "";
+      document.getElementById("accNote").value = "";
+    });
+
+    document.getElementById("addPerson").addEventListener("click", () => {
+      const name = document.getElementById("personName").value.trim();
+      const role = document.getElementById("personRole").value.trim();
+      if (!name || !role) return;
+      data.personnel.unshift({
+        name,
+        role,
+        status: document.getElementById("personStatus").value,
+        date: today()
+      });
+      saveData(data);
+      renderWebApp();
+      document.getElementById("personName").value = "";
+      document.getElementById("personRole").value = "";
+    });
+  </script>
+</body>
+</html>
