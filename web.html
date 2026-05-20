@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OfisDesk Web Paneli</title>
+  <style>
+    :root {
+      --navy: #071a31;
+      --navy-2: #102b4d;
+      --active: #2d4a7a;
+      --ink: #102033;
+      --muted: #64748b;
+      --line: #d9e2ef;
+      --bg: #f3f6fb;
+      --paper: #ffffff;
+      --gold: #e7b74a;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warn: #d97706;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    button, input, select { font: inherit; }
+    .login-screen {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(360px, 520px) 1fr;
+      background:
+        linear-gradient(90deg, rgba(7,26,49,.98), rgba(7,26,49,.78)),
+        url("assets/slides/01-genel.jpg") center / cover;
+      color: white;
+    }
+    .login-panel {
+      align-self: center;
+      margin-left: clamp(24px, 6vw, 90px);
+      width: min(420px, calc(100vw - 48px));
+      background: rgba(255,255,255,.96);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 28px;
+      box-shadow: 0 30px 90px rgba(0,0,0,.32);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      font-weight: 900;
+      font-size: 26px;
+      color: var(--navy);
+    }
+    .brand img { width: 66px; height: 66px; border-radius: 16px; object-fit: cover; }
+    h1, h2, h3 { margin: 0; color: var(--navy); }
+    .login-panel p { margin: 10px 0 22px; color: var(--muted); line-height: 1.5; }
+    .field { display: grid; gap: 7px; margin-bottom: 12px; }
+    .field label { color: var(--muted); font-size: 13px; font-weight: 800; }
+    .field input, .field select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px;
+      background: #fbfdff;
+      color: var(--ink);
+    }
+    .btn {
+      min-height: 44px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-weight: 900;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn.gold { background: var(--gold); color: #08192d; width: 100%; margin-top: 8px; }
+    .btn.dark { background: var(--navy-2); color: white; }
+    .btn.ghost { background: #eef3fb; color: var(--navy); }
+    .login-error, .sync-error { display: none; color: var(--danger); font-size: 13px; margin-top: 10px; line-height: 1.45; }
+    .workspace {
+      display: none;
+      min-height: 100vh;
+      grid-template-columns: 250px 1fr;
+    }
+    .workspace.active { display: grid; }
+    .sidebar {
+      background: var(--navy);
+      color: white;
+      padding: 18px;
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+    .side-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; font-weight: 900; font-size: 22px; }
+    .side-brand img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; }
+    .user { color: #b8c8dd; font-size: 13px; margin-bottom: 18px; line-height: 1.45; }
+    .tab {
+      width: 100%;
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: #dce7f7;
+      text-align: left;
+      padding: 0 12px;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    .tab.active { background: var(--active); color: white; font-weight: 900; }
+    .sidebar-actions { margin-top: 22px; display: grid; gap: 8px; }
+    .main {
+      min-width: 0;
+      padding: 22px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+    }
+    .topbar {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+    .topbar p { margin: 4px 0 0; color: var(--muted); }
+    .panel {
+      display: none;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      min-height: calc(100vh - 128px);
+      overflow: hidden;
+    }
+    .panel.active { display: block; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(160px, 1fr)); gap: 12px; margin: 16px 0; }
+    .stat { background: #eef3fb; border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+    .stat span { display: block; color: var(--muted); font-size: 13px; }
+    .stat b { display: block; color: var(--navy); font-size: 24px; margin-top: 6px; }
+    .form-row { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)) auto; gap: 10px; align-items: end; margin: 16px 0; }
+    .form-row.three { grid-template-columns: repeat(3, minmax(150px, 1fr)) auto; }
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      max-height: calc(100vh - 310px);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
+    th, td { padding: 12px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+    th { background: #e8eef8; color: var(--navy); position: sticky; top: 0; z-index: 1; }
+    .status { border-radius: 999px; padding: 4px 9px; font-weight: 800; font-size: 12px; display: inline-block; }
+    .status.green { background: #dcfce7; color: #166534; }
+    .status.gold { background: #fef3c7; color: #92400e; }
+    .status.red { background: #fee2e2; color: #991b1b; }
+    .note {
+      background: #fff7df;
+      border: 1px solid #f2d88f;
+      border-radius: 8px;
+      color: #7a5510;
+      padding: 14px;
+      line-height: 1.55;
+      margin: 14px 0;
+    }
+    @media (max-width: 900px) {
+      .login-screen { grid-template-columns: 1fr; }
+      .workspace { grid-template-columns: 1fr; }
+      .sidebar { position: static; min-height: auto; }
+      .main { padding: 14px; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .form-row, .form-row.three { grid-template-columns: 1fr; }
+      .panel { min-height: auto; }
+      .table-wrap { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <section class="login-screen" id="loginScreen">
+    <form class="login-panel" id="loginForm">
+      <div class="brand"><img src="assets/app_icon.png" alt="">OfisDesk</div>
+      <h1>Web Paneli</h1>
+      <p>Masaüstü uygulamada kullandığınız kullanıcı adı/e-posta ve şifre ile giriş yapın. Muhasebe ve personel verileri Supabase üzerinden uygulama ile aynı kaynaktan okunur.</p>
+      <div class="field">
+        <label for="loginUser">Kullanıcı adı veya e-posta</label>
+        <input id="loginUser" autocomplete="username" placeholder="ornek@ofisdesk.net">
+      </div>
+      <div class="field">
+        <label for="loginPass">Şifre</label>
+        <input id="loginPass" type="password" autocomplete="current-password" placeholder="Şifreniz">
+      </div>
+      <button class="btn gold" id="loginBtn" type="submit">Giriş Yap</button>
+      <div class="login-error" id="loginError"></div>
+    </form>
+  </section>
+
+  <section class="workspace" id="workspace">
+    <aside class="sidebar">
+      <div class="side-brand"><img src="assets/app_icon.png" alt="">OfisDesk</div>
+      <div class="user" id="webUser">Kullanıcı</div>
+      <button class="tab active" data-panel="overview" type="button">Genel Bakış</button>
+      <button class="tab" data-panel="accounting" type="button">Muhasebe</button>
+      <button class="tab" data-panel="personnel" type="button">Personel İşleri</button>
+      <button class="tab" data-panel="files" type="button">Dosya Föyü</button>
+      <div class="sidebar-actions">
+        <button class="btn dark" id="refreshBtn" type="button">Verileri Yenile</button>
+        <a class="btn ghost" href="index.html">Siteye Dön</a>
+        <button class="btn dark" id="logoutBtn" type="button">Çıkış Yap</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="pageTitle">Genel Bakış</h2>
+          <p id="syncText">Supabase bağlantısı bekleniyor.</p>
+          <div class="sync-error" id="syncError"></div>
+        </div>
+        <button class="btn dark" id="fullscreenBtn" type="button">Tam Ekran</button>
+      </header>
+
+      <section class="panel active" id="overview">
+        <h3>Genel Durum</h3>
+        <div class="stats">
+          <div class="stat"><span>Toplam Gelir</span><b id="statIncome">0 TL</b></div>
+          <div class="stat"><span>Toplam Gider</span><b id="statExpense">0 TL</b></div>
+          <div class="stat"><span>Net Bakiye</span><b id="statBalance">0 TL</b></div>
+          <div class="stat"><span>Personel</span><b id="statPersonnel">0</b></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Son İşlem</th><th>Alan</th><th>Açıklama</th><th>Tarih</th></tr></thead>
+            <tbody id="activityRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="accounting">
+        <h3>Muhasebe</h3>
+        <div class="form-row">
+          <div class="field"><label>Kurum</label><input id="accInstitution" placeholder="Garanti Bankası"></div>
+          <div class="field"><label>İşlem</label><select id="accType"><option>Gelir</option><option>Gider</option><option>UYAP Masrafı</option></select></div>
+          <div class="field"><label>Tutar</label><input id="accAmount" type="number" min="0" placeholder="12500"></div>
+          <div class="field"><label>Açıklama</label><input id="accNote" placeholder="Tahsilat / masraf"></div>
+          <button class="btn dark" id="addAccounting" type="button">Kaydet</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Kurum</th><th>İşlem</th><th>Tutar</th><th>Açıklama</th><th>Tarih</th><th>Kaydeden</th></tr></thead>
+            <tbody id="accountingRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="personnel">
+        <h3>Personel İşleri</h3>
+        <div class="form-row three">
+          <div class="field"><label>Ad Soyad</label><input id="personName" placeholder="Av. Ayşe Demir"></div>
+          <div class="field"><label>Görev</label><input id="personRole" placeholder="Avukat"></div>
+          <div class="field"><label>Durum</label><select id="personStatus"><option>Aktif</option><option>İzinli</option><option>Pasif</option></select></div>
+          <button class="btn dark" id="addPerson" type="button">Kaydet</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Ad Soyad</th><th>Görev</th><th>Durum</th><th>Telefon</th><th>E-posta</th><th>Kayıt Tarihi</th></tr></thead>
+            <tbody id="personRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="files">
+        <h3>Dosya Föyü</h3>
+        <div class="note">Dosya Föyü verileri masaüstü uygulamada şu an yerel dosya/yedekleme sistemiyle tutuluyor. Web ile birebir eşleşmesi için bir sonraki adımda Dosya Föyü kayıtlarını da Supabase tablosuna taşıyacağız.</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Föy</th><th>Durum</th><th>Açıklama</th></tr></thead>
+            <tbody><tr><td>Bulut eşleştirme bekleniyor</td><td><span class="status gold">Planlandı</span></td><td>Muhasebe ve personel eşleşti; Dosya Föyü için ortak tablo kurulacak.</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <script>
+    const SUPABASE_URL = "https://tdezeimyjqyegdohwnno.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_mEUfSecMGp6hZyAukeGsWA_3n1UG1Qk";
+    const API = `${SUPABASE_URL}/rest/v1`;
+    const money = new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 });
+    let session = null;
+    let currentUser = null;
+    let officeName = "";
+    let data = { accounting: [], personnel: [] };
+
+    function headers(prefer = "") {
+      const h = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": `Bearer ${session.access_token}`,
+        "Content-Type": "application/json"
+      };
+      if (prefer) h.Prefer = prefer;
+      return h;
+    }
+
+    function esc(value) {
+      return String(value || "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function todayIso() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function showError(target, message) {
+      const el = document.getElementById(target);
+      el.textContent = message;
+      el.style.display = "block";
+    }
+
+    function clearError(target) {
+      const el = document.getElementById(target);
+      el.textContent = "";
+      el.style.display = "none";
+    }
+
+    async function jsonFetch(url, options = {}) {
+      const resp = await fetch(url, options);
+      const text = await resp.text();
+      let body = null;
+      try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+      if (!resp.ok) {
+        const msg = body?.msg || body?.error_description || body?.error || body?.message || text || "İşlem başarısız.";
+        throw new Error(msg);
+      }
+      return body;
+    }
+
+    async function resolveLoginEmail(value) {
+      const clean = value.trim();
+      if (clean.includes("@")) return clean.toLowerCase();
+      const username = encodeURIComponent(clean.toLowerCase());
+      const rows = await jsonFetch(`${API}/profiles?select=id,username,email&username=eq.${username}`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+      });
+      const found = (rows || []).find(row => String(row.username || "").toLowerCase() === clean.toLowerCase());
+      if (!found?.email) throw new Error("Bu kullanıcı adı için profil/e-posta bulunamadı.");
+      return found.email;
+    }
+
+    async function login(loginName, password) {
+      const email = await resolveLoginEmail(loginName);
+      const auth = await jsonFetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: "POST",
+        headers: { apikey: SUPABASE_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      session = auth;
+      const profiles = await jsonFetch(`${API}/profiles?id=eq.${auth.user.id}&select=id,email,username,full_name,role,is_active,license_expires_at,office_id,mp_access,created_at`, {
+        headers: headers()
+      });
+      if (!profiles?.length) throw new Error("Profil bulunamadı.");
+      currentUser = profiles[0];
+      if (currentUser.is_active === false) throw new Error("Bu kullanıcı pasif durumda.");
+      if (!currentUser.office_id) throw new Error("Bu kullanıcı herhangi bir hukuk bürosuna bağlı değil.");
+      const offices = await jsonFetch(`${API}/law_offices?select=id,name&id=eq.${currentUser.office_id}`, { headers: headers() });
+      officeName = offices?.[0]?.name || "";
+    }
+
+    async function loadAccounting() {
+      const office = encodeURIComponent(currentUser.office_id);
+      data.accounting = await jsonFetch(`${API}/accounting_records?select=id,office_id,record_date,entry_kind,institution_id,institution_name,amount,description,note,created_at,created_by,created_by_name&office_id=eq.${office}&order=created_at.desc&limit=500`, {
+        headers: headers()
+      });
+    }
+
+    async function loadPersonnel() {
+      const office = encodeURIComponent(currentUser.office_id);
+      const rows = await jsonFetch(`${API}/office_personnel_data?select=payload&office_id=eq.${office}&data_key=eq.records&limit=1`, {
+        headers: headers()
+      });
+      data.personnel = rows?.[0]?.payload || [];
+    }
+
+    async function savePersonnel() {
+      await jsonFetch(`${API}/office_personnel_data?on_conflict=office_id,data_key`, {
+        method: "POST",
+        headers: headers("return=representation,resolution=merge-duplicates"),
+        body: JSON.stringify({
+          office_id: currentUser.office_id,
+          data_key: "records",
+          payload: data.personnel,
+          updated_by: currentUser.id,
+          updated_at: new Date().toISOString()
+        })
+      });
+    }
+
+    async function loadAll() {
+      clearError("syncError");
+      document.getElementById("syncText").textContent = "Veriler Supabase üzerinden yükleniyor...";
+      await Promise.all([loadAccounting(), loadPersonnel()]);
+      render();
+      document.getElementById("syncText").textContent = `Canlı veri: ${officeName || "Hukuk Bürosu"} | Son yenileme: ${new Date().toLocaleTimeString("tr-TR")}`;
+    }
+
+    function render() {
+      const income = data.accounting.filter(x => x.entry_kind === "Gelir").reduce((sum, x) => sum + Number(x.amount || 0), 0);
+      const expense = data.accounting.filter(x => x.entry_kind !== "Gelir").reduce((sum, x) => sum + Number(x.amount || 0), 0);
+      document.getElementById("statIncome").textContent = money.format(income);
+      document.getElementById("statExpense").textContent = money.format(expense);
+      document.getElementById("statBalance").textContent = money.format(income - expense);
+      document.getElementById("statPersonnel").textContent = data.personnel.length;
+
+      document.getElementById("accountingRows").innerHTML = data.accounting.map(row => `
+        <tr>
+          <td>${esc(row.institution_name)}</td>
+          <td><span class="status ${row.entry_kind === "Gelir" ? "green" : "gold"}">${esc(row.entry_kind)}</span></td>
+          <td>${money.format(Number(row.amount || 0))}</td>
+          <td>${esc(row.description || row.note || "-")}</td>
+          <td>${esc(row.record_date || String(row.created_at || "").slice(0, 10))}</td>
+          <td>${esc(row.created_by_name || "-")}</td>
+        </tr>`).join("");
+
+      document.getElementById("personRows").innerHTML = data.personnel.map(row => `
+        <tr>
+          <td>${esc(row.name)}</td>
+          <td>${esc(row.role)}</td>
+          <td><span class="status ${row.status === "Aktif" || row.active !== false ? "green" : "red"}">${esc(row.status || (row.active === false ? "Pasif" : "Aktif"))}</span></td>
+          <td>${esc(row.phone || "-")}</td>
+          <td>${esc(row.email || "-")}</td>
+          <td>${esc(row.start_date || row.created_at || "-")}</td>
+        </tr>`).join("");
+
+      const activities = [
+        ...data.accounting.slice(0, 5).map(row => ({ action: row.entry_kind, area: "Muhasebe", text: `${row.institution_name || "-"} - ${money.format(Number(row.amount || 0))}`, date: row.created_at || row.record_date || "" })),
+        ...data.personnel.slice(0, 5).map(row => ({ action: row.status || "Aktif", area: "Personel", text: `${row.name || "-"} - ${row.role || "-"}`, date: row.start_date || row.created_at || "" }))
+      ].slice(0, 10);
+      document.getElementById("activityRows").innerHTML = activities.map(row => `
+        <tr><td>${esc(row.action)}</td><td>${esc(row.area)}</td><td>${esc(row.text)}</td><td>${esc(String(row.date).slice(0, 19))}</td></tr>
+      `).join("");
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearError("loginError");
+      const loginName = document.getElementById("loginUser").value.trim();
+      const password = document.getElementById("loginPass").value.trim();
+      if (!loginName || !password) {
+        showError("loginError", "Kullanıcı adı/e-posta ve şifre giriniz.");
+        return;
+      }
+      const button = document.getElementById("loginBtn");
+      button.disabled = true;
+      button.textContent = "Giriş yapılıyor...";
+      try {
+        await login(loginName, password);
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("workspace").classList.add("active");
+        document.getElementById("webUser").innerHTML = `${esc(currentUser.full_name || currentUser.username || currentUser.email)}<br>${esc(officeName)}`;
+        await loadAll();
+      } catch (err) {
+        showError("loginError", err.message || String(err));
+      } finally {
+        button.disabled = false;
+        button.textContent = "Giriş Yap";
+      }
+    });
+
+    document.querySelectorAll(".tab[data-panel]").forEach(tab => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab[data-panel]").forEach(item => item.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach(panel => panel.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.panel).classList.add("active");
+        document.getElementById("pageTitle").textContent = tab.textContent;
+      });
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", async () => {
+      try { await loadAll(); } catch (err) { showError("syncError", err.message || String(err)); }
+    });
+
+    document.getElementById("addAccounting").addEventListener("click", async () => {
+      clearError("syncError");
+      const institution = document.getElementById("accInstitution").value.trim();
+      const amount = Number(document.getElementById("accAmount").value || 0);
+      const type = document.getElementById("accType").value;
+      const note = document.getElementById("accNote").value.trim();
+      if (!institution || amount <= 0) {
+        showError("syncError", "Kurum ve tutar alanlarını doldurun.");
+        return;
+      }
+      try {
+        const payload = {
+          office_id: currentUser.office_id,
+          record_date: todayIso(),
+          entry_kind: type,
+          institution_name: institution.toUpperCase(),
+          amount,
+          description: note,
+          note: "",
+          created_by: currentUser.id,
+          created_by_name: currentUser.username || currentUser.email
+        };
+        await jsonFetch(`${API}/accounting_records`, {
+          method: "POST",
+          headers: headers("return=representation"),
+          body: JSON.stringify(payload)
+        });
+        document.getElementById("accInstitution").value = "";
+        document.getElementById("accAmount").value = "";
+        document.getElementById("accNote").value = "";
+        await loadAll();
+      } catch (err) {
+        showError("syncError", err.message || String(err));
+      }
+    });
+
+    document.getElementById("addPerson").addEventListener("click", async () => {
+      clearError("syncError");
+      const name = document.getElementById("personName").value.trim();
+      const role = document.getElementById("personRole").value.trim();
+      if (!name || !role) {
+        showError("syncError", "Personel adı ve görev alanlarını doldurun.");
+        return;
+      }
+      try {
+        data.personnel.unshift({
+          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+          name,
+          role,
+          status: document.getElementById("personStatus").value,
+          active: document.getElementById("personStatus").value !== "Pasif",
+          start_date: todayIso(),
+          created_at: new Date().toISOString()
+        });
+        await savePersonnel();
+        document.getElementById("personName").value = "";
+        document.getElementById("personRole").value = "";
+        await loadAll();
+      } catch (err) {
+        showError("syncError", err.message || String(err));
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      session = null;
+      currentUser = null;
+      data = { accounting: [], personnel: [] };
+      document.getElementById("workspace").classList.remove("active");
+      document.getElementById("loginScreen").style.display = "grid";
+      document.getElementById("loginPass").value = "";
+    });
+
+    document.getElementById("fullscreenBtn").addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    });
+  </script>
+</body>
+</html>
