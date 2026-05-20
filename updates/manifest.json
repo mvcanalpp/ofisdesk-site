@@ -1,0 +1,15 @@
+{
+  "app_id": "ofisdesk",
+  "channel": "stable",
+  "version": "1.2.2",
+  "installer_url": "https://github.com/mvcanalpp/ofisdesk-site/releases/download/v1.2.2/OfisDesk.exe",
+  "download_url": "https://github.com/mvcanalpp/ofisdesk-site/releases/download/v1.2.2/OfisDesk.exe",
+  "url": "https://github.com/mvcanalpp/releases/download/v1.2.2/OfisDesk.exe"",
+  "path": https://github.com/mvcanalpp/releases/download/v1.2.2/OfisDesk.exe,
+  "file": "OfisDesk.exe",
+  "sha256": "F9EA87AB817F3A8F91924A449A6B5AEBB0F896FE07B0D8AFDB16493504DC88D9",
+  "silent": true,
+  "auto_install": true,
+  "force": false,
+  "changelog": "Dosya Föyü, Muhasebe menüleri, yedekleme, başlık filtreleri ve kullanıcı izleme geliştirmeleri eklendi."
+}
