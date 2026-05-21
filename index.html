@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OfisDesk | Hukuk Büroları İçin Profesyonel Çalışma Merkezi</title>
+  <meta name="description" content="OfisDesk; hukuk büroları için dosya föyü, muhasebe, personel, UYAP talepleri, PDF araçları ve web panelini tek merkezde toplar.">
+  <style>
+    :root {
+      --ink: #102033;
+      --muted: #5d6b7c;
+      --bg: #f4f7fb;
+      --paper: #ffffff;
+      --navy: #0a1d33;
+      --navy-2: #12395f;
+      --gold: #d9a441;
+      --gold-2: #f2c96d;
+      --line: #d8e2ef;
+      --soft: #eef4fb;
+      --green: #16a34a;
+      --red: #dc2626;
+      --shadow: 0 24px 70px rgba(16,32,51,.13);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    button, input, select, textarea { font: inherit; }
+    .wrap { width: min(1220px, calc(100% - 44px)); margin: 0 auto; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+    .topbar .wrap {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 950;
+      font-size: 30px;
+      letter-spacing: 0;
+    }
+    .brand-emblem {
+      width: 86px;
+      height: 86px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--navy), var(--navy-2));
+      color: var(--gold-2);
+      border: 1px solid rgba(10,29,51,.12);
+      box-shadow: 0 14px 28px rgba(10,29,51,.18);
+      font-size: 24px;
+    }
+    .brand-emblem span { position: relative; z-index: 1; }
+    .brand-emblem img { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; object-fit: cover; }
+    .nav-links { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .nav-links a {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      border-radius: 999px;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 14px;
+      border: 1px solid transparent;
+    }
+    .nav-links a:hover { border-color: var(--line); background: var(--soft); }
+    .nav-links .nav-cta { background: var(--navy); color: white; border-color: var(--navy); padding: 0 22px; }
+    .hero {
+      min-height: calc(100vh - 88px);
+      display: grid;
+      align-items: center;
+      background:
+        linear-gradient(115deg, rgba(244,247,251,.98), rgba(244,247,251,.92) 48%, rgba(18,57,95,.16)),
+        radial-gradient(circle at 82% 18%, rgba(217,164,65,.28), transparent 28%);
+      padding: 58px 0 46px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(360px, .95fr) minmax(380px, 560px);
+      gap: 56px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: #fff7df;
+      color: #7a5510;
+      font-weight: 850;
+      border: 1px solid #f2d88f;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(46px, 6vw, 82px);
+      line-height: .98;
+      letter-spacing: 0;
+      color: var(--navy);
+    }
+    .lead {
+      margin: 24px 0 0;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1.65;
+      max-width: 760px;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+    .btn {
+      min-height: 58px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 28px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-weight: 950;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn.primary { background: var(--navy); color: white; box-shadow: 0 16px 34px rgba(10,29,51,.24); }
+    .btn.gold { background: var(--gold); color: #071a31; box-shadow: 0 16px 34px rgba(217,164,65,.24); }
+    .btn.ghost { background: white; color: var(--navy); border-color: var(--line); }
+    .hero-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .hero-card h2 { margin: 0 0 14px; color: var(--navy); font-size: 22px; }
+    .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mini {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px;
+      min-height: 112px;
+    }
+    .mini b { display: block; color: var(--navy); font-size: 24px; margin-bottom: 6px; }
+    .mini span { color: var(--muted); line-height: 1.45; }
+    section { scroll-margin-top: 108px; }
+    .section { padding: 76px 0; background: white; }
+    .section.alt { background: var(--bg); }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
+    .section-title { margin: 0; color: var(--navy); font-size: clamp(34px, 4vw, 52px); line-height: 1.05; }
+    .section-copy { margin: 12px 0 0; color: var(--muted); font-size: 18px; line-height: 1.65; max-width: 850px; }
+    .detail-grid { display: grid; grid-template-columns: minmax(300px, 520px) 1fr; gap: 34px; align-items: center; }
+    .slide-frame {
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(217,164,65,.5);
+      background: var(--navy);
+      box-shadow: var(--shadow);
+    }
+    .slide-track { display: flex; transition: transform .45s ease; }
+    .slide { min-width: 100%; display: grid; place-items: center; padding: 12px; }
+    .slide img { width: 100%; max-height: min(78vh, 820px); object-fit: contain; display: block; border-radius: 10px; background: var(--navy); }
+    .slide-copy { background: var(--navy); color: white; border-radius: 14px; padding: 28px; box-shadow: var(--shadow); }
+    .slide-copy h3 { margin: 0 0 10px; font-size: 34px; color: white; }
+    .slide-copy p { margin: 0; color: #dce7f7; font-size: 18px; line-height: 1.6; }
+    .slider-controls { display: flex; align-items: center; gap: 10px; margin-top: 24px; }
+    .icon-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(255,255,255,.1);
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+    }
+    .dots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .dot { width: 11px; height: 11px; border-radius: 999px; border: 0; background: rgba(255,255,255,.34); cursor: pointer; padding: 0; }
+    .dot.active { width: 34px; background: var(--gold); }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .feature {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 22px;
+      min-height: 190px;
+      box-shadow: 0 14px 36px rgba(16,32,51,.06);
+    }
+    .feature h3 { margin: 0 0 10px; color: var(--navy); font-size: 21px; }
+    .feature p { margin: 0; color: var(--muted); line-height: 1.6; }
+    .pricing-layout { display: grid; grid-template-columns: minmax(320px, 440px) 1fr; gap: 30px; align-items: start; }
+    .pricing-poster {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: white;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+    .pricing-poster img { width: 100%; display: block; border-radius: 10px; }
+    .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .plan {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 16px 40px rgba(16,32,51,.07);
+    }
+    .plan.popular { border-color: var(--gold); box-shadow: 0 20px 50px rgba(217,164,65,.16); }
+    .plan h3 { margin: 0; color: var(--navy); font-size: 22px; }
+    .price { margin: 14px 0 10px; color: var(--navy); font-size: 34px; font-weight: 950; }
+    .price span { font-size: 15px; color: var(--muted); font-weight: 700; }
+    .plan p { margin: 0 0 18px; color: var(--muted); line-height: 1.5; }
+    .plan .btn { width: 100%; min-height: 52px; }
+    .checkout {
+      margin-top: 20px;
+      background: #fff7df;
+      border: 1px solid #f2d88f;
+      border-radius: 14px;
+      padding: 22px;
+    }
+    .checkout-grid { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 12px; align-items: end; }
+    .field { display: grid; gap: 7px; }
+    .field label { color: var(--muted); font-size: 13px; font-weight: 850; }
+    .field input, .field select, .field textarea {
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0 12px;
+      background: white;
+      color: var(--ink);
+    }
+    .about-card, .contact-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+    .about-card p, .contact-card p { color: var(--muted); line-height: 1.75; font-size: 17px; margin: 0 0 14px; }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .contact-item { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+    .contact-item b { display: block; color: var(--navy); font-size: 18px; margin-bottom: 6px; }
+    .web-panel {
+      background: linear-gradient(135deg, var(--navy), var(--navy-2));
+      color: white;
+      padding: 70px 0;
+    }
+    .web-panel .section-title { color: white; }
+    .web-panel .section-copy { color: #dce7f7; }
+    .web-panel-box {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 16px;
+      padding: 28px;
+      background: rgba(255,255,255,.08);
+    }
+    .download { background: var(--paper); padding: 52px 0; border-top: 1px solid var(--line); }
+    .download .wrap { display: flex; align-items: center; justify-content: space-between; gap: 22px; }
+    footer { background: var(--navy); color: #cbd8ea; padding: 26px 0; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 20px; }
+    @media (max-width: 1050px) {
+      .topbar .wrap { align-items: flex-start; flex-direction: column; padding: 16px 0; }
+      .hero-grid, .detail-grid, .pricing-layout, .contact-grid, .web-panel-box { grid-template-columns: 1fr; }
+      .feature-grid, .plans { grid-template-columns: 1fr 1fr; }
+      .checkout-grid { grid-template-columns: 1fr 1fr; }
+      .download .wrap, footer .wrap { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 680px) {
+      .wrap { width: min(100% - 28px, 1220px); }
+      .brand { font-size: 24px; }
+      .brand-emblem { width: 68px; height: 68px; }
+      .nav-links { width: 100%; justify-content: flex-start; }
+      .nav-links a { min-height: 42px; padding: 0 12px; }
+      .hero { padding-top: 34px; }
+      .feature-grid, .plans, .checkout-grid { grid-template-columns: 1fr; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#anasayfa" aria-label="OfisDesk Anasayfa">
+        <span class="brand-emblem"><img src="assets/app_icon.png" alt="" onerror="this.remove()"><span>OD</span></span>
+        <span>OfisDesk</span>
+      </a>
+      <nav class="nav-links" aria-label="Ana menü">
+        <a href="#anasayfa">Anasayfa</a>
+        <a href="#ayrinti">OfisDesk Ayrıntı</a>
+        <a href="#ucretlendirme">Ücretlendirme</a>
+        <a href="#hakkinda">Hakkında</a>
+        <a href="#iletisim">İletişim ve Destek</a>
+        <a class="nav-cta" href="web.html">Web Panelinde Çalış</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="anasayfa">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">Hukuk büroları için tek merkez</div>
+          <h1>Dosya, muhasebe ve ekip yönetimi tek ekranda.</h1>
+          <p class="lead">OfisDesk; hukuk bürolarının günlük operasyonunu daha düzenli, hızlı ve kontrollü hale getirmek için geliştirilen profesyonel bir çalışma merkezidir. Dosya föyü, kurum bazlı takip, muhasebe, UYAP talep hazırlığı, PDF araçları ve personel yönetimi aynı yapı içinde birleşir. Masaüstü uygulaması yoğun çalışma için güçlü bir merkez sunarken, web paneli hızlı erişim ve takip için geniş ekranlı bir çalışma alanı sağlar.</p>
+          <div class="actions">
+            <a class="btn primary" href="https://github.com/mvcanalpp/ofisdesk-site/releases/download/v1.3.0/OfisDesk.exe">Windows Uygulamasını İndir</a>
+            <a class="btn gold" href="web.html">Web Panelinde Çalış</a>
+          </div>
+        </div>
+        <aside class="hero-card">
+          <h2>OfisDesk ile neler yönetilir?</h2>
+          <div class="mini-grid">
+            <div class="mini"><b>Dosya Föyü</b><span>Kurumlara ayrılmış föyler, başlık filtreleri ve son işlem takibi.</span></div>
+            <div class="mini"><b>Muhasebe</b><span>Gelir, gider, kurum bakiyesi ve rapor hazırlama ekranları.</span></div>
+            <div class="mini"><b>Personel</b><span>Ekip kayıtları, görevler, izinler ve yetki düzeni.</span></div>
+            <div class="mini"><b>UYAP & PDF</b><span>Talep üretimi, PDF birleştirme, dönüştürme ve toplu işlemler.</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="ayrinti">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">OfisDesk Ayrıntı</h2>
+            <p class="section-copy">Programın ana ekranları ve kullanım alanları aşağıdaki tanıtım slaytında gösterilir. Slaytı oklarla gezebilir veya otomatik akışta izleyebilirsiniz.</p>
+          </div>
+        </div>
+        <div class="detail-grid">
+          <div class="slide-frame">
+            <div class="slide-track" id="slideTrack">
+              <div class="slide"><img src="assets/slides/01-genel.jpg" alt="OfisDesk genel tanıtım"></div>
+              <div class="slide"><img src="assets/slides/02-dosya-foyu.jpg" alt="Dosya Föyü tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/03-personel-kontrol.jpg" alt="Personel ve kontrol tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/04-muhasebe.jpg" alt="Muhasebe tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/05-uyap-pdf.jpg" alt="UYAP ve PDF araçları tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/06-ek-ozellikler.jpg" alt="Ek özellikler tanıtımı"></div>
+              <div class="slide"><img src="assets/slides/07-fiyatlandirma.jpg" alt="Fiyatlandırma tanıtımı"></div>
+            </div>
+          </div>
+          <div class="slide-copy">
+            <h3 id="slideTitle">Genel Bakış</h3>
+            <p id="slideText">OfisDesk'i hukuk büroları için tek çalışma merkezi olarak konumlandırır.</p>
+            <div class="slider-controls">
+              <button class="icon-btn" id="prevSlide" type="button" aria-label="Önceki slayt">‹</button>
+              <button class="icon-btn" id="nextSlide" type="button" aria-label="Sonraki slayt">›</button>
+            </div>
+            <div class="dots" id="slideDots" aria-label="Slayt seçimi"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap">
+        <h2 class="section-title">Modüller</h2>
+        <p class="section-copy">OfisDesk; büro içindeki tekrar eden işlerin aynı standartta yürütülmesini hedefler. Böylece dosya takibi, tahsilat, masraf, belge ve ekip süreçleri tek düzen içinde ilerler.</p>
+        <div class="feature-grid">
+          <div class="feature"><h3>Dosya Föyü</h3><p>Kurum kurum föy açabilir, başlıklardan filtreleyebilir, son değiştiren kişiyi ve işlem tarihini görebilirsiniz.</p></div>
+          <div class="feature"><h3>Muhasebe</h3><p>Gelir, gider, UYAP masrafı, kurum bakiyesi ve Excel raporlarını düzenli bir panelden takip edebilirsiniz.</p></div>
+          <div class="feature"><h3>Personel İşleri</h3><p>Personel kayıtları, görevler, izinler, prim ve kullanıcı yetkileri için merkezi kontrol sağlar.</p></div>
+          <div class="feature"><h3>UYAP Talepleri</h3><p>Talep şablonları, dosya bilgileri ve belge hazırlığı süreçlerini daha hızlı yürütmenize yardımcı olur.</p></div>
+          <div class="feature"><h3>PDF Araçları</h3><p>PDF birleştirme, bölme, sıkıştırma, metne çevirme ve toplu belge işlemlerini destekler.</p></div>
+          <div class="feature"><h3>Yedekleme ve Geri Dönüş</h3><p>Otomatik yedekleme ve önceki veriye dönüş mantığıyla çalışma güvenliğini artırır.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="ucretlendirme">
+      <div class="wrap">
+        <h2 class="section-title">Ücretlendirme</h2>
+        <p class="section-copy">Slaytta yer alan fiyat listesi aşağıda ayrıca planlara ayrılmıştır. Satın alma akışı için plan ve kullanıcı sayısını seçerek ödeme talebi oluşturabilirsiniz.</p>
+        <div class="pricing-layout">
+          <div class="pricing-poster"><img src="assets/slides/07-fiyatlandirma.jpg" alt="OfisDesk fiyat listesi"></div>
+          <div>
+            <div class="plans">
+              <div class="plan"><h3>1 Günlük Demo</h3><div class="price">Ücretsiz</div><p>Tüm özellikleri kısa süreli deneyin, kararınızı güvenle verin.</p><button class="btn ghost buy-btn" data-plan="1 Günlük Demo" data-price="0">Demo Talep Et</button></div>
+              <div class="plan"><h3>Aylık Ücret</h3><div class="price">5.000 TL <span>/ ay</span></div><p>1 kullanıcı için tüm modüllere erişim.</p><button class="btn primary buy-btn" data-plan="Aylık Ücret - 1 Kullanıcı" data-price="5000">Satın Al</button></div>
+              <div class="plan popular"><h3>Yıllık Ücret</h3><div class="price">15.000 TL <span>/ yıl</span></div><p>1 kullanıcı için yıllık erişim. Aylığa göre avantajlı kullanım.</p><button class="btn gold buy-btn" data-plan="Yıllık Ücret - 1 Kullanıcı" data-price="15000">Satın Al</button></div>
+              <div class="plan"><h3>Sınırsız Kullanıcı</h3><div class="price">50.000 TL <span>/ ay</span></div><p>Ekibinizin tamamı için aylık sınırsız kullanıcı erişimi.</p><button class="btn primary buy-btn" data-plan="Aylık Ücret - Sınırsız Kullanıcı" data-price="50000">Satın Al</button></div>
+              <div class="plan popular"><h3>Sınırsız Yıllık</h3><div class="price">150.000 TL <span>/ yıl</span></div><p>Ekibinizin tamamı için yıllık sınırsız kullanıcı lisansı.</p><button class="btn gold buy-btn" data-plan="Yıllık Ücret - Sınırsız Kullanıcı" data-price="150000">Satın Al</button></div>
+            </div>
+            <div class="checkout" id="checkout">
+              <h3>Ödeme ve Lisans Talebi</h3>
+              <p class="section-copy">Seçiminizi yaptıktan sonra bilgilerinizle lisans talebi oluşturulur. Canlı ödeme altyapısı için iyzico/PayTR/Stripe entegrasyonu eklenebilir.</p>
+              <div class="checkout-grid">
+                <div class="field"><label>Seçilen Plan</label><input id="selectedPlan" value="Yıllık Ücret - 1 Kullanıcı"></div>
+                <div class="field"><label>Kullanıcı Sayısı</label><input id="userCount" type="number" min="1" value="1"></div>
+                <div class="field"><label>E-posta / Telefon</label><input id="buyerContact" placeholder="ornek@ofisdesk.net"></div>
+                <button class="btn primary" id="paymentBtn" type="button">Ödeme Talebi Oluştur</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="hakkinda">
+      <div class="wrap">
+        <h2 class="section-title">Hakkında</h2>
+        <div class="about-card">
+          <p>OfisDesk, hukuk bürolarının dosya takibi, muhasebe kayıtları, personel düzeni, UYAP talepleri ve belge işlemlerini daha kontrollü bir yapıya taşımak amacıyla geliştirilmiştir. Programın temel yaklaşımı, büro içindeki dağınık takip süreçlerini tek merkezde toplayarak kullanıcının her ekranda aynı düzenle çalışmasını sağlamaktır.</p>
+          <p>Bu uygulama Melih Volkan Canalp tarafından geliştirilmiştir. OfisDesk; özellikle icra, tahsilat, kurum bazlı dosya takibi ve hukuk bürosu operasyonlarında ihtiyaç duyulan pratik iş akışlarını dikkate alır. Amaç, yalnızca kayıt tutmak değil; kayıtların kim tarafından, ne zaman ve hangi işlemle değiştiğini izlenebilir hale getirmektir.</p>
+          <p>Program masaüstü kullanım için güçlü bir temel sunarken, web paneli de hızlı erişim, ön izleme ve temel kayıt ekranları için hazırlanmıştır. Geliştirme süreci; güvenli kayıt, düzenli yedekleme, kullanıcı kontrolü, raporlama ve profesyonel arayüz odağıyla devam etmektedir.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="iletisim">
+      <div class="wrap">
+        <h2 class="section-title">İletişim ve Destek</h2>
+        <p class="section-copy">Demo, lisans, kurulum, güncelleme ve destek talepleri için aşağıdaki iletişim bilgileri üzerinden ulaşabilirsiniz.</p>
+        <div class="contact-grid">
+          <div class="contact-card">
+            <div class="contact-item"><b>Adres</b><span>Gölbaşı / Ankara</span></div>
+            <div class="contact-item" style="margin-top:12px;"><b>Telefon</b><span>+90 546 788 6526</span></div>
+          </div>
+          <div class="contact-card">
+            <p>Kurulum desteği, kullanıcı lisansı, yeni özellik talepleri ve teknik destek için iletişim kurulabilir. OfisDesk’in çalışma şekli büronuzun ihtiyaçlarına göre değerlendirilebilir; kullanıcı sayısı, modül kullanımı ve raporlama ihtiyaçları için özel yönlendirme yapılabilir.</p>
+            <div class="actions">
+              <a class="btn primary" href="tel:+905467886526">Telefonla Ara</a>
+              <a class="btn ghost" href="https://wa.me/905467886526">WhatsApp Destek</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="web-panel" id="webpanel">
+      <div class="wrap">
+        <h2 class="section-title">Web Panelinde Çalış</h2>
+        <p class="section-copy">Masaüstü uygulamasına ek olarak tarayıcı üzerinden geniş ekranlı bir çalışma paneli açabilirsiniz. Web panelinde muhasebe, personel işleri ve dosya föyü ekranları ayrı bir sayfada daha rahat kullanılacak şekilde hazırlanmıştır.</p>
+        <div class="web-panel-box">
+          <div>
+            <h3>Geniş çalışma ekranı</h3>
+            <p>Giriş ekranından sonra sol menülü, tam ekran bir panel açılır. Böylece site içinde dar bir alana sıkışmadan çalışabilirsiniz.</p>
+          </div>
+          <a class="btn gold" href="web.html">Web Panelini Aç</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="download">
+      <div class="wrap">
+        <div>
+          <h2 class="section-title">Windows uygulamasını indirin</h2>
+          <p class="section-copy">Güncel masaüstü sürümü: v1.3.0</p>
+        </div>
+        <a class="btn primary" href="https://github.com/mvcanalpp/ofisdesk-site/releases/download/v1.3.0/OfisDesk.exe">OfisDesk'i İndir</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© 2026 OfisDesk</span>
+      <span>Melih Volkan Canalp tarafından geliştirilmiştir.</span>
+    </div>
+  </footer>
+
+  <script>
+    const slides = [
+      { title: "Genel Bakış", text: "OfisDesk, hukuk bürosu operasyonlarını dosya, finans, belge ve ekip yönetimiyle tek merkezde toplar." },
+      { title: "Dosya Föyü", text: "Kurum bazlı föy yönetimi, başlık filtreleri, son değiştiren kullanıcı ve yedekleme düzeni sağlar." },
+      { title: "Personel & Kontrol", text: "Personel takibi, kullanıcı yetkileri, işlem geçmişi ve güvenli kayıt yapısı sunar." },
+      { title: "Muhasebe", text: "Kurum bakiyeleri, gelir-gider kayıtları, UYAP masrafı ve Excel raporları için düzenli panel sunar." },
+      { title: "UYAP & PDF Araçları", text: "Talep hazırlama, PDF birleştirme, UDF oluşturma, metne çevirme ve toplu işlem akışlarını hızlandırır." },
+      { title: "Ek Özellikler", text: "YTS tahsilat, barkod sorgulama, bulut veri saklama ve aynı anda çalışma gibi ek imkanlar içerir." },
+      { title: "Fiyatlandırma", text: "Demo, aylık, yıllık ve sınırsız kullanıcı seçenekleriyle farklı büro ihtiyaçlarına uyum sağlar." }
+    ];
+    const track = document.getElementById("slideTrack");
+    const title = document.getElementById("slideTitle");
+    const text = document.getElementById("slideText");
+    const dots = document.getElementById("slideDots");
+    let current = 0;
+    let timer;
+
+    slides.forEach((_, index) => {
+      const dot = document.createElement("button");
+      dot.className = "dot";
+      dot.type = "button";
+      dot.setAttribute("aria-label", `${index + 1}. slayta git`);
+      dot.addEventListener("click", () => showSlide(index, true));
+      dots.appendChild(dot);
+    });
+
+    function showSlide(index, manual = false) {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      title.textContent = slides[current].title;
+      text.textContent = slides[current].text;
+      [...dots.children].forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === current));
+      if (manual) restartTimer();
+    }
+
+    function restartTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => showSlide(current + 1), 5200);
+    }
+
+    document.getElementById("prevSlide").addEventListener("click", () => showSlide(current - 1, true));
+    document.getElementById("nextSlide").addEventListener("click", () => showSlide(current + 1, true));
+    showSlide(0);
+    restartTimer();
+
+    document.querySelectorAll(".buy-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        document.getElementById("selectedPlan").value = button.dataset.plan;
+        document.getElementById("checkout").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+
+    document.getElementById("paymentBtn").addEventListener("click", () => {
+      const plan = document.getElementById("selectedPlan").value.trim();
+      const count = document.getElementById("userCount").value.trim();
+      const contact = document.getElementById("buyerContact").value.trim();
+      const message = encodeURIComponent(`OfisDesk lisans talebi%0APlan: ${plan}%0AKullanıcı sayısı: ${count}%0Aİletişim: ${contact || "-"}`);
+      window.location.href = `https://wa.me/905467886526?text=${message}`;
+    });
+  </script>
+</body>
+</html>
